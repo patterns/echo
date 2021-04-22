@@ -14,7 +14,7 @@ type rtype struct {
 	Indicators []dtype `json:"indicators"`
 }
 type dtype struct {
-	IndicatorId     string  `json:"indicatorId"`
+	IndicatorId     int  `json:"indicatorId"`
 	AlignedStrength float32 `json:"alignedStrength"`
 }
 type qtype struct {
@@ -41,7 +41,7 @@ func handler(request events.APIGatewayProxyRequest) (*events.APIGatewayProxyResp
 
 	for _, pk := range permutations {
 		item := dtype{
-			IndicatorId:     string(pk + 1),
+			IndicatorId:     pk + 1,
 			AlignedStrength: rand.Float32(),
 		}
 		data = append(data, item)
