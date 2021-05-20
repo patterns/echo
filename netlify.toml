@@ -9,12 +9,13 @@
   GO111MODULE = "on"
 
 [[redirects]]
-  from = "/api/echo/foxtrot/*"
+  from = "/api/echo/foxtrot"
   to = "/.netlify/functions/foxtrot/:splat"
   status = 200
+  force = true
 
 [[redirects]]
-  from = "/api/echo"
+  from = "/api/*"
   to = "/.netlify/functions/echo/:splat"
   status = 200
 
