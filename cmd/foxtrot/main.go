@@ -1,12 +1,10 @@
 package main
 
 import (
+	"fmt"
 	"encoding/json"
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
-	"math/rand"
-
-	"time"
 )
 
 type rtype struct {
