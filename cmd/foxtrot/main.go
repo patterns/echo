@@ -10,43 +10,38 @@ import (
 )
 
 type rtype struct {
-	ProjectId  string  `json:"projectId"`
 	Indicators []dtype `json:"indicators"`
 }
 type dtype struct {
-	IndicatorId     int     `json:"indicatorId"`
-	AlignedStrength float32 `json:"alignedStrength"`
-}
-type qtype struct {
-	ProjectId string `json:"projectId"`
-	//Name string `json:"name"`
-	//Description string `json:"description"`
-	//ProjectImacts []string `json:"projectImpacts"`
-	//DesiredOutcomes []string `json:"desiredOutcomes"`
+	Number      string `json:"id"`
+	Description string `json:"description"`
 }
 
+// very ambiguous property name in this query to remind us to continue refining the oas
+type qtype struct {
+	Numbers []string `json:"numbers"`
+}
+
+// handler for /echo/foxtrot requests
 func handler(request events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse, error) {
-	word, err := extractField(request.Body)
+	nums, err := extractField(request.Body)
 	if err != nil {
 		return &events.APIGatewayProxyResponse{
 			StatusCode: 400,
-			Body:       "JSON is missing the 'projectId' property",
+			Body:       "JSON array 'numbers' is missing ",
 		}, nil
 	}
 
 	var data []dtype
-	// make arbitrary JSON for answer, to echo back
-	rand.Seed(time.Now().Unix())
-	permutations := rand.Perm(4)
 
-	for _, pk := range permutations {
+	for _, num := range nums {
 		item := dtype{
-			IndicatorId:     pk + 1,
-			AlignedStrength: rand.Float32(),
+			Number:      num,
+			Description: formatDescr(num),
 		}
 		data = append(data, item)
 	}
-	payload := rtype{ProjectId: word, Indicators: data}
+	payload := rtype{Indicators: data}
 	answer, _ := json.Marshal(payload)
 
 	headers := map[string]string{
@@ -67,13 +62,17 @@ func main() {
 }
 
 // grab a field value from the request body
-func extractField(body string) (word string, err error) {
+func extractField(body string) (data []string, err error) {
 	var qry qtype
-	word = ""
-	// expect JSON that contains a "id" field
+	data = []string{}
+	// expect JSON array "numbers"
 	err = json.Unmarshal([]byte(body), &qry)
 	if err != nil {
 		return
 	}
-	return qry.ProjectId, nil
+	return data, nil
+}
+
+func formatDescr(num string) string {
+	return fmt.Sprintf("This is the %s indicator description.", num)
 }
