@@ -68,7 +68,7 @@ func extractField(body string) (data []string, err error) {
 	if err != nil {
 		return
 	}
-	return data, nil
+	return qry.Numbers, nil
 }
 
 func formatDescr(num string) string {
